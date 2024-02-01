@@ -108,6 +108,30 @@ class CoreModelForm(forms.ModelForm):
             self.save_m2m()
         return instance
 
+    @property
+    def hydrated_fielsets(self):
+        # for some reason self.fields returns defintions and not bound fields
+        # so until i figure out a better way we can just create a dict here
+        # https://github.com/django/django/blob/main/django/forms/forms.py#L52
+
+        bound_field_dict = {}
+        for field in self:
+            bound_field_dict[field.name] = field
+
+        hydrated_fieldsets = []
+
+        for fieldset in self.fieldsets:
+            hyrdrated_fieldset = {
+                "layout": fieldset["layout"],
+                "fields": [],
+            }
+            for field_name in fieldset["fields"]:
+                hyrdrated_fieldset["fields"].append(bound_field_dict[field_name])
+
+            hydrated_fieldsets.append(hyrdrated_fieldset)
+
+        return hydrated_fieldsets
+
 
 class ChildForm(forms.ModelForm):
     class Meta:
@@ -155,9 +179,7 @@ class TaggableModelForm(forms.ModelForm):
 
 class PumpingForm(CoreModelForm, TaggableModelForm):
     theme = activities["pumping"]
-    fieldsets = {
-        "required": ["child", "start", "end", "amount"],
-    }
+    fieldsets = [{"fields": ["child", "start", "end", "amount"], "layout": "required"}]
 
     class Meta:
         model = models.Pumping
@@ -172,7 +194,10 @@ class PumpingForm(CoreModelForm, TaggableModelForm):
 
 class DiaperChangeForm(CoreModelForm, TaggableModelForm):
     theme = activities["changes"]
-    fieldsets = {"choices": ["wet", "solid"], "required": ["time", "child"]}
+    fieldsets = [
+        {"fields": ["wet", "solid"], "layout": "choices"},
+        {"fields": ["child", "time"], "layout": "required"},
+    ]
 
     class Meta:
         model = models.DiaperChange
@@ -198,10 +223,11 @@ class FeedingForm(CoreModelForm, TaggableModelForm):
 
 class BottleFeedingForm(CoreModelForm, TaggableModelForm):
     theme = activities["bottle"]
-    fieldsets = {
-        "choices": ["type"],
-        "required": ["child", "start", "amount"],
-    }
+
+    fieldsets = [
+        {"fields": ["type"], "layout": "choices"},
+        {"fields": ["child", "start", "amount"], "layout": "required"},
+    ]
 
     def save(self):
         instance = super(BottleFeedingForm, self).save(commit=False)
