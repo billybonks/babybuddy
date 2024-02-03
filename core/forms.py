@@ -260,6 +260,12 @@ class NoteForm(CoreModelForm, TaggableModelForm):
 
 
 class SleepForm(CoreModelForm, TaggableModelForm):
+    theme = activities["sleep"]
+    fieldsets = [
+        {"fields": ["nap"], "layout": "choices"},
+        {"fields": ["child", "start", "end"], "layout": "required"},
+    ]
+
     class Meta:
         model = models.Sleep
         fields = ["child", "start", "end", "nap", "notes", "tags"]
@@ -303,6 +309,11 @@ class TimerForm(CoreModelForm):
 
 
 class TummyTimeForm(CoreModelForm, TaggableModelForm):
+    theme = activities["tummy"]
+    fieldsets = [
+        {"fields": ["child", "start", "end", "milestone"], "layout": "required"},
+    ]
+
     class Meta:
         model = models.TummyTime
         fields = ["child", "start", "end", "milestone", "tags"]
