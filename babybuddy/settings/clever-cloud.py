@@ -1,6 +1,8 @@
 from .base import *
 import os
 
+DEBUG = bool(strtobool(os.environ.get("DEBUG") or "True"))
+
 if os.getenv("POSTGRESQL_ADDON_HOST"):
     config["ENGINE"] = "django.db.backends.postgresql"
     config["HOST"] = os.getenv("POSTGRESQL_ADDON_HOST")
