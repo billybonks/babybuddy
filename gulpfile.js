@@ -137,7 +137,9 @@ function extras() {
             .pipe(flatten({ subPath: 3 }))
             .pipe(gulp.dest(config.extrasConfig.logo.dest)),
         gulp.src(config.extrasConfig.root.files)
-            .pipe(gulp.dest(config.extrasConfig.root.dest))
+            .pipe(gulp.dest(config.extrasConfig.root.dest)),
+        gulp.src(config.extrasConfig.mobile.files)
+            .pipe(gulp.dest(config.extrasConfig.mobile.dest))
     );
 }
 
@@ -376,6 +378,6 @@ gulp.task('watch', watch);
 
 gulp.task('build', gulp.parallel('extras', 'scripts', 'styles'));
 
-gulp.task('updatestatic', gulp.series('lint', 'clean', 'build', 'collectstatic'));
+gulp.task('updatestatic', gulp.series('clean', 'build', 'collectstatic'));
 
 gulp.task('default', gulp.series('build', gulp.parallel('watch', 'runserver')));
