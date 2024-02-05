@@ -210,6 +210,20 @@ class DiaperChangeForm(CoreModelForm, TaggableModelForm):
 
 
 class FeedingForm(CoreModelForm, TaggableModelForm):
+    theme = activities["feeding"]
+    fieldsets = [
+        {
+            "fields": [
+                "child",
+                "start",
+                "end",
+                "type",
+                "method",
+                "amount",
+            ],
+            "layout": "required",
+        },
+    ]
     class Meta:
         model = models.Feeding
         fields = ["child", "start", "end", "type", "method", "amount", "notes", "tags"]
