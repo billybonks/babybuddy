@@ -18,6 +18,10 @@ module.exports = {
         root: {
             dest: basePath + 'root/',
             files: 'babybuddy/static_src/root/*'
+        },
+        mobile: {
+            dest: 'mobile/static/',
+            files: 'mobile/static_src/**/*'
         }
     },
     glyphFontConfig: {
