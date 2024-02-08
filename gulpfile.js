@@ -190,11 +190,16 @@ function scripts() {
  * Builds and copies CSS static files to configured paths.
  */
 function styles() {
-    return gulp.src(config.stylesConfig.app)
-        .pipe(sassGlob({ignorePaths: config.stylesConfig.ignore}))
-        .pipe(sass().on('error', sass.logError))
-        .pipe(concat('app.css'))
-        .pipe(gulp.dest(config.stylesConfig.dest));
+    return all(
+        gulp.src(config.stylesConfig.app)
+            .pipe(sassGlob({ignorePaths: config.stylesConfig.ignore}))
+            .pipe(sass().on('error', sass.logError))
+            .pipe(concat('app.css'))
+            .pipe(gulp.dest(config.stylesConfig.dest)),
+        gulp
+            .src(config.stylesConfig.mobile)
+            .pipe(gulp.dest(config.stylesConfig.dest))
+    );
 }
 
 /**
@@ -299,7 +304,7 @@ gulp.task('reset', () => {
 });
 
 gulp.task('runserver', function(cb) {
-    let command = ['run', 'python', 'manage.py', 'runserver'];
+    let command = ["run", "python", "manage.py", "runserver", "0.0.0.0:8000"];
 
     /**
      * Process any parameters. Any arguments found here will be removed from
